@@ -10,8 +10,15 @@
 
 @interface ViewController : UIViewController
 
-@property(nonatomic, strong) IBOutlet UILabel* json;
-@property(nonatomic, strong) IBOutlet UILabel* deserializedName;
-@property(nonatomic, strong) IBOutlet UILabel* deserializedDate;
+@property(nonatomic, strong) NSDateFormatter* formatter;
+
+@property(nonatomic, strong) IBOutlet UIDatePicker* dateInput;
+@property(nonatomic, strong) IBOutlet UITextField* nameInput;
+
+@property(nonatomic, strong) IBOutlet UILabel* jsonLabel;
+@property(nonatomic, strong) IBOutlet UILabel* deserializedNameLabel;
+@property(nonatomic, strong) IBOutlet UILabel* deserializedDateLabel;
+
+-(IBAction) serializeAndDeserializeJSON;
 
 @end

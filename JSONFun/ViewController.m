@@ -1,52 +1,63 @@
-//
-//  ViewController.m
-//  JSONFun
-//
-//  Created by Eric Meyer on 2/23/13.
-//  Copyright (c) 2013 Eric Meyer. All rights reserved.
-//
-
 #import "ViewController.h"
 
 @interface ViewController ()
+
+-(NSDictionary*) buildDictionaryFromUserInput;
+-(NSData*) serializeJSON:(NSDictionary*) userInput;
+-(void) displaySerializedJSONData: (NSData*) jsonData;
+-(NSDictionary*) deserializeJSONData:(NSData*) jsonData;
+-(void) displayDeserializedData:(NSDictionary*) deserializedJSON;
 
 @end
 
 @implementation ViewController
 
-@synthesize json, deserializedName, deserializedDate;
+@synthesize dateInput, nameInput, jsonLabel, deserializedNameLabel, deserializedDateLabel;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSDictionary* info = [NSDictionary dictionaryWithObjectsAndKeys:
-                          @"name", @"who",
-                          @"country", @"where",
-//                          [NSDate date], @"when",
-                          nil];
-
-    //convert object to data
-    NSError* error;
-    NSData* jsonData = [NSJSONSerialization dataWithJSONObject: info
-                                                       options: NSJSONWritingPrettyPrinted
-                                                         error: &error];
-
-    json.text = [[NSString alloc] initWithData:jsonData
-                                      encoding:NSUTF8StringEncoding];
-
-    NSDictionary* deserializedJSON = [NSJSONSerialization JSONObjectWithData: jsonData
-                                                                     options: NSJSONReadingMutableContainers
-                                                                       error: &error];
-
-    NSLog(@"deserializedJSON: %@", deserializedJSON);
-    self.deserializedName.text = [deserializedJSON objectForKey: @"who"];
-	// Do any additional setup after loading the view, typically from a nib.
+    self.formatter = [NSDateFormatter new];
+    [self.formatter setDateStyle: NSDateFormatterShortStyle];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(IBAction) serializeAndDeserializeJSON {
+    NSDictionary* userInput = [self buildDictionaryFromUserInput];
+    NSData* jsonData = [self serializeJSON: userInput];
+    [self displaySerializedJSONData: jsonData];
+    [self displayDeserializedData: [self deserializeJSONData: jsonData]];
+}
+
+-(NSDictionary*) buildDictionaryFromUserInput {
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            self.nameInput.text, @"name",
+            [self.formatter stringFromDate: self.dateInput.date], @"date",
+            nil];
+}
+
+-(NSData*) serializeJSON:(NSDictionary*) userInput {
+    NSError* error;
+    return [NSJSONSerialization dataWithJSONObject: userInput
+                                           options: NSJSONWritingPrettyPrinted
+                                             error: &error];
+}
+
+-(void) displaySerializedJSONData: (NSData*) jsonData {
+    jsonLabel.text = [[NSString alloc] initWithData: jsonData
+                                           encoding: NSUTF8StringEncoding];
+}
+
+-(NSDictionary*) deserializeJSONData:(NSData *)jsonData {
+    NSError* error;
+    return [NSJSONSerialization JSONObjectWithData: jsonData
+                                           options: NSJSONReadingMutableContainers
+                                             error: &error];
+}
+
+-(void) displayDeserializedData:(NSDictionary*) deserializedJSON {
+    NSDate* deserializedDate = [self.formatter dateFromString: [deserializedJSON objectForKey: @"date"]];
+    self.deserializedNameLabel.text = [deserializedJSON objectForKey: @"name"];
+    self.deserializedDateLabel.text = [NSString stringWithFormat: @"%@", deserializedDate];
 }
 
 @end
