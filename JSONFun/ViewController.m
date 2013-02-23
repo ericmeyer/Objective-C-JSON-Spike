@@ -14,7 +14,7 @@
 
 @implementation ViewController
 
-@synthesize json;
+@synthesize json, deserializedName, deserializedDate;
 
 - (void)viewDidLoad
 {
@@ -30,9 +30,16 @@
     NSData* jsonData = [NSJSONSerialization dataWithJSONObject: info
                                                        options: NSJSONWritingPrettyPrinted
                                                          error: &error];
-    
+
     json.text = [[NSString alloc] initWithData:jsonData
                                       encoding:NSUTF8StringEncoding];
+
+    NSDictionary* deserializedJSON = [NSJSONSerialization JSONObjectWithData: jsonData
+                                                                     options: NSJSONReadingMutableContainers
+                                                                       error: &error];
+
+    NSLog(@"deserializedJSON: %@", deserializedJSON);
+    self.deserializedName.text = [deserializedJSON objectForKey: @"who"];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 

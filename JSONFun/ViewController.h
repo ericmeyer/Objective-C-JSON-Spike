@@ -11,5 +11,7 @@
 @interface ViewController : UIViewController
 
 @property(nonatomic, strong) IBOutlet UILabel* json;
+@property(nonatomic, strong) IBOutlet UILabel* deserializedName;
+@property(nonatomic, strong) IBOutlet UILabel* deserializedDate;
 
 @end
