@@ -14,9 +14,25 @@
 
 @implementation ViewController
 
+@synthesize json;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSDictionary* info = [NSDictionary dictionaryWithObjectsAndKeys:
+                          @"name", @"who",
+                          @"country", @"where",
+//                          [NSDate date], @"when",
+                          nil];
+
+    //convert object to data
+    NSError* error;
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject: info
+                                                       options: NSJSONWritingPrettyPrinted
+                                                         error: &error];
+    
+    json.text = [[NSString alloc] initWithData:jsonData
+                                      encoding:NSUTF8StringEncoding];
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
